@@ -1,14 +1,111 @@
 package alarmClock;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+
 import javax.swing.*;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle;
 import javax.swing.border.*;
 
 public class AlarmClock extends JFrame {
+
+	private LinkedList<Long> queue = new LinkedList<Long>();
+	private DefaultListModel<String> dlm = new DefaultListModel<String>();
+	
+	public LinkedList<Long> getQueue(){
+		return queue;
+	}
+
 	public AlarmClock() {
 		initComponents();
+		dlm.addElement("No alarms set");
+	}
+
+	public static String timeFormatHMS(long time) {
+		StringBuilder t = new StringBuilder();
+		long total_secs = time / 1000L;
+		long total_mins = total_secs / 60L;
+		long total_hrs = total_mins / 60L;
+		int secs = (int) total_secs % 60;
+		int mins = (int) total_mins % 60;
+		int hrs = (int) total_hrs % 24;
+		if (hrs < 10) {
+			t.append("0");
+		}
+		t.append(hrs).append(":");
+		if (mins < 10) {
+			t.append("0");
+		}
+		t.append(mins).append(":");
+		if (secs < 10) {
+			t.append("0");
+		}
+		t.append(secs);
+		return t.toString();
+	}
+
+	private void buttonAddActionPerformed(ActionEvent e) {
+		int hour = (int) spinnerHour.getValue();
+		int minute = (int) spinnerMinute.getValue();
+		int second = (int) spinnerSecond.getValue();
+		Long alarmTimeMs = (long) ((hour * 3600000) + (minute * 60000) + (second * 1000));
+		addToQueue(alarmTimeMs);
+		dlm.clear();
+		for (int i = 0; i < queue.size(); i++) {
+			dlm.addElement("Alarm set: " + timeFormatHMS(queue.get(i)));
+		}
+		listAlarms.setModel(dlm);
+	}
+
+
+	private void addToQueue(Long alarmTimeMs) {
+		if (queue.isEmpty()) {
+			queue.add(alarmTimeMs);
+		} else if (queue.get(0) > alarmTimeMs) {
+			queue.add(0, alarmTimeMs);
+		} else if (queue.get(queue.size() - 1) < alarmTimeMs) {
+			queue.add(queue.size(), alarmTimeMs);
+		} else {
+			int i = 0;
+			while (queue.get(i) < alarmTimeMs) {
+				i++;
+			}
+			queue.add(i, alarmTimeMs);
+		}
+	}
+
+	private void buttonRemoveActionPerformed(ActionEvent e) {
+		if (dlm.size() != -1 ) {
+			if (listAlarms.getSelectedIndex() != -1) {
+				String selection = listAlarms.getSelectedValue().split("set: ")[1];
+				if (selection.equals("No alarms set")) {
+					return;
+				} else {
+					int hour = Integer.parseInt(selection.split(":")[0]);
+					int minute = Integer.parseInt(selection.split(":")[1]);
+					int second = Integer.parseInt(selection.split(":")[2]);
+					Long alarmTimeMs = (long) ((hour * 3600000) + (minute * 60000) + (second * 1000));
+					queue.remove(alarmTimeMs);
+					dlm.remove(listAlarms.getSelectedIndex());
+				}
+			} else {
+				String selection = dlm.get(dlm.getSize() - 1);
+				if (selection.equals("No alarms set")) {
+					return;
+				} else {
+					
+					dlm.remove(dlm.getSize() - 1);
+					
+				}
+			}
+			if (dlm.isEmpty()) {
+				dlm.addElement("No alarms set");
+			}
+		}
+		return;
 	}
 
 	private void initComponents() {
@@ -61,7 +158,7 @@ public class AlarmClock extends JFrame {
 		}
 
 		//---- spinnerHour ----
-		spinnerHour.setModel(new SpinnerNumberModel(0, 0, 24, 1));
+		spinnerHour.setModel(new SpinnerNumberModel(0, 0, 23, 1));
 
 		//---- labelHour ----
 		labelHour.setText("HOUR");
@@ -72,20 +169,22 @@ public class AlarmClock extends JFrame {
 		labelMinute.setHorizontalAlignment(SwingConstants.CENTER);
 
 		//---- spinnerMinute ----
-		spinnerMinute.setModel(new SpinnerNumberModel(0, 0, 60, 1));
+		spinnerMinute.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 
 		//---- labelSecond ----
 		labelSecond.setText("SECOND");
 		labelSecond.setHorizontalAlignment(SwingConstants.CENTER);
 
 		//---- spinnerSecond ----
-		spinnerSecond.setModel(new SpinnerNumberModel(0, 0, 60, 1));
+		spinnerSecond.setModel(new SpinnerNumberModel(0, 0, 59, 1));
 
 		//---- buttonAdd ----
 		buttonAdd.setText("ADD ALARM");
+		buttonAdd.addActionListener(e -> buttonAddActionPerformed(e));
 
 		//---- buttonRemove ----
 		buttonRemove.setText("REMOVE ALARM");
+		buttonRemove.addActionListener(e -> buttonRemoveActionPerformed(e));
 
 		GroupLayout contentPaneLayout = new GroupLayout(contentPane);
 		contentPane.setLayout(contentPaneLayout);
