@@ -84,14 +84,15 @@ public class AlarmClock extends JFrame implements Observer {
 			queue.add(i, alarmTimeMs);
 		}
 	}
-
-	private void buttonRemoveActionPerformed(ActionEvent e) {
+	
+	public void buttonRemoveActionPerformed(ActionEvent e) {
 		if (dlm.size() != -1 ) {
 			if (listAlarms.getSelectedIndex() != -1) {
-				String selection = listAlarms.getSelectedValue().split("set: ")[1];
+				String selection = listAlarms.getSelectedValue();
 				if (selection.equals("No alarms set")) {
 					return;
 				} else {
+					selection = listAlarms.getSelectedValue().split("set: ")[1];
 					int hour = Integer.parseInt(selection.split(":")[0]);
 					int minute = Integer.parseInt(selection.split(":")[1]);
 					int second = Integer.parseInt(selection.split(":")[2]);
@@ -104,9 +105,13 @@ public class AlarmClock extends JFrame implements Observer {
 				if (selection.equals("No alarms set")) {
 					return;
 				} else {
-					
+					selection = selection.split("set: ")[1];
+					int hour = Integer.parseInt(selection.split(":")[0]);
+					int minute = Integer.parseInt(selection.split(":")[1]);
+					int second = Integer.parseInt(selection.split(":")[2]);
+					Long alarmTimeMs = (long) ((hour * 3600000) + (minute * 60000) + (second * 1000));
+					queue.remove(alarmTimeMs);
 					dlm.remove(dlm.getSize() - 1);
-					
 				}
 			}
 			if (dlm.isEmpty()) {
