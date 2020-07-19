@@ -27,13 +27,6 @@ public class AlarmClock extends JFrame {
 		this.model = m;
 		initComponents();
 		dlm.addElement("No alarms set");
-		 ClockFace face = new ClockFace();
-	        SwingUtilities.invokeLater(new Runnable() {
-	            public void run() {
-	            	panelClock.add(face);
-	            	face.repaint();
-	            }
-	        });
 	}
 
 	public static String timeFormatHMS(long time) {
