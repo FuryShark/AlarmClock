@@ -6,12 +6,14 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.*;
 import javax.swing.border.*;
 
 @SuppressWarnings("serial")
-public class AlarmClock extends JFrame {
+public class AlarmClock extends JFrame implements Observer {
 	
 	private final Font font = new Font("SansSerif", Font.PLAIN, 20);
 
@@ -27,6 +29,7 @@ public class AlarmClock extends JFrame {
 		this.model = m;
 		initComponents();
 		dlm.addElement("No alarms set");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
 	public static String timeFormatHMS(long time) {
@@ -324,4 +327,9 @@ public class AlarmClock extends JFrame {
 	private JSpinner spinnerSecond;
 	private JButton buttonAdd;
 	private JButton buttonRemove;
+
+	@Override
+	public void update(Observable o, Object arg) {
+		panelClock.repaint();
+	}
 }
