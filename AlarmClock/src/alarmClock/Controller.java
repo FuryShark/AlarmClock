@@ -14,7 +14,14 @@ public class Controller {
 
 	private Model model;
 	private AlarmClock alarmClock;
-
+	
+	/**
+	 * Repaints the Clock face every second to update the time
+	 * Displays a dialog box message if current time is past next alarm time
+	 * 
+	 * @param m Model instance
+	 * @param c AlarmClock instance
+	 */
 	public Controller(Model m, AlarmClock c) {
 		model = m;
 		alarmClock = c;

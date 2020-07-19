@@ -15,6 +15,9 @@ public class Model extends Observable {
         update();
     }
     
+    /**
+     * Updates the clock with current time
+     */
     public void update() {
         Calendar date = Calendar.getInstance();
         hour = date.get(Calendar.HOUR);

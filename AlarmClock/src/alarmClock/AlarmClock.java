@@ -25,10 +25,19 @@ public class AlarmClock extends JFrame implements Observer {
 	private DefaultListModel<String> dlm = new DefaultListModel<String>();
 	private Model model;
 
+	/**
+	 * @return LinkedList alarm queue
+	 */
 	public LinkedList<Long> getQueue(){
 		return queue;
 	}
 
+	/**
+	 * loads gui components and reads file if inputted
+	 * 
+	 * @param m Model to update the clock painted to be current time
+	 * @param fileName chosen file name to load and read from with alarm times
+	 */
 	public AlarmClock(Model m, String fileName) {
 		this.model = m;
 		initComponents();
@@ -39,6 +48,11 @@ public class AlarmClock extends JFrame implements Observer {
 		}
 	}
 
+	/**
+	 * Reads the file to load alarm times from. Adds times to the queue and displays it on the JList listAlarms
+	 * 
+	 * @param fileName chosen file name to load and read from
+	 */
 	private void readFile(String fileName) {
 		FileReader reader;
 		try {
@@ -61,7 +75,13 @@ public class AlarmClock extends JFrame implements Observer {
 		}
 		listAlarms.setModel(dlm);
 	}
-
+	
+	/**
+	 * Returns the time formatted into Hours:Minutes:Seconds (HH:MM:SS)
+	 * 
+	 * @param time time of type long to be formatted
+	 * @return the formatted time
+	 */
 	public static String timeFormatHMS(long time) {
 		StringBuilder t = new StringBuilder();
 		long total_secs = time / 1000L;
@@ -85,6 +105,11 @@ public class AlarmClock extends JFrame implements Observer {
 		return t.toString();
 	}
 
+	/**
+	 * When buttonAdd is clicked hours minutes and seconds are gotten from spinners, turned into a time, and added to alarm queue and JList listAlarms
+	 * 
+	 * @param e ActionEvent (button clicked)
+	 */
 	private void buttonAddActionPerformed(ActionEvent e) {
 		int hour = (int) spinnerHour.getValue();
 		int minute = (int) spinnerMinute.getValue();
@@ -99,6 +124,11 @@ public class AlarmClock extends JFrame implements Observer {
 	}
 
 
+	/**
+	 * Finds and inserts the alarm time in correct position in LinkedList queue (smallest to largest number)
+	 * 
+	 * @param alarmTimeMs Alarm time in milliseconds from a 24 hour clock to be added to queue position
+	 */
 	private void addToQueue(Long alarmTimeMs) {
 		if (queue.isEmpty()) {
 			queue.add(alarmTimeMs);
@@ -115,6 +145,12 @@ public class AlarmClock extends JFrame implements Observer {
 		}
 	}
 
+	/**
+	 * Removes an alarm from queue and JList.
+	 * If an alarm is selected it will remove that otherwise it will remove the most recently added alarm.
+	 * 
+	 * @param e ActionEvent (button clicked)
+	 */
 	public void buttonRemoveActionPerformed(ActionEvent e) {
 		if (dlm.size() != -1 ) {
 			if (listAlarms.getSelectedIndex() != -1) {
@@ -151,13 +187,7 @@ public class AlarmClock extends JFrame implements Observer {
 		return;
 	}
 
-	public JPanel getPanelClock() {
-		return panelClock;
-	}
-
-
-
-
+	
 	private void initComponents() {
 		panelClock = new JPanel() {
 			@Override

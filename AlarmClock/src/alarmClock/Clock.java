@@ -29,7 +29,6 @@ public class Clock {
 		Controller controller = new Controller(model, alarmClock);
 		alarmClock.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(WindowEvent windowEvent) {
-				System.out.println("HEEEEEEEE");
 				if (alarmClock.getQueue().size() > 0) {
 					if (showConfirmDialog("Save alarms?")) {
 						saveFile(alarmClock);
@@ -39,10 +38,20 @@ public class Clock {
 		});
 	}
 
+	/**
+	 * Displays a dialogue box asking the user if they want to save/load alarm settings
+	 * 
+	 * @param message Message to display to the user
+	 * @return true if user selected yes otherwise false
+	 */
 	private static boolean showConfirmDialog(String message) {
 		return JOptionPane.showConfirmDialog(null, message, message, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 	}
 
+	/**
+	 * Lets the user select a file name and destination to save the alarms to
+	 * @param alarmClock instance of AlarmClock
+	 */
 	private static void saveFile(AlarmClock alarmClock) {
 		JFileChooser fileChooser = new JFileChooser();
 		int retval = fileChooser.showSaveDialog(alarmClock);
@@ -57,7 +66,6 @@ public class Clock {
 			fileName = file.getAbsolutePath();
 		}
 		if (fileName != null) {
-			System.out.println("HERE");
 			File file = new File(fileName);
 			PrintWriter printWriter = null;
 			if (file.exists()) {
@@ -65,9 +73,7 @@ public class Clock {
 			}
 			try {
 				if (!file.exists()) {
-					System.out.println("MAKING NEW FILE");
 					if (file.createNewFile()) {
-						System.out.println("NEW");
 					}
 				}
 				printWriter = new PrintWriter(new FileOutputStream(file, true));
