@@ -48,7 +48,7 @@ public class Controller {
 					LocalTime nextAlarm = LocalTime.of(hrs, mins, secs);
 					if (time.isAfter(nextAlarm)) {
 						alarmClock.buttonRemoveActionPerformed(null);
-						JOptionPane.showMessageDialog(null, "ALARM | It is passed " + t.toString());
+						JOptionPane.showMessageDialog(null, "ALARM | It is past " + t.toString());
 					}
 				}
 			}

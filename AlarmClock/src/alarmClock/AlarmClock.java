@@ -5,6 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Observer;
@@ -14,22 +18,48 @@ import javax.swing.border.*;
 
 @SuppressWarnings("serial")
 public class AlarmClock extends JFrame implements Observer {
-	
+
 	private final Font font = new Font("SansSerif", Font.PLAIN, 20);
 
 	private LinkedList<Long> queue = new LinkedList<Long>();
 	private DefaultListModel<String> dlm = new DefaultListModel<String>();
 	private Model model;
-	
+
 	public LinkedList<Long> getQueue(){
 		return queue;
 	}
 
-	public AlarmClock(Model m) {
+	public AlarmClock(Model m, String fileName) {
 		this.model = m;
 		initComponents();
 		dlm.addElement("No alarms set");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (fileName != null && !fileName.equals("")) {
+			readFile(fileName);
+		}
+	}
+
+	private void readFile(String fileName) {
+		FileReader reader;
+		try {
+			reader = new FileReader(fileName);
+			BufferedReader br = new BufferedReader(reader);
+			String line = br.readLine();
+			while (line != null) {
+				queue.add(Long.parseLong(line));
+				line = br.readLine();
+			}
+			br.close();
+		} catch (FileNotFoundException e1) {
+			System.out.println(e1);
+		} catch (IOException e1) {
+			System.out.println(e1);
+		}
+		dlm.clear();
+		for (int i = 0; i < queue.size(); i++) {
+			dlm.addElement("Alarm set: " + timeFormatHMS(queue.get(i)));
+		}
+		listAlarms.setModel(dlm);
 	}
 
 	public static String timeFormatHMS(long time) {
@@ -84,7 +114,7 @@ public class AlarmClock extends JFrame implements Observer {
 			queue.add(i, alarmTimeMs);
 		}
 	}
-	
+
 	public void buttonRemoveActionPerformed(ActionEvent e) {
 		if (dlm.size() != -1 ) {
 			if (listAlarms.getSelectedIndex() != -1) {
@@ -120,11 +150,11 @@ public class AlarmClock extends JFrame implements Observer {
 		}
 		return;
 	}
-	
+
 	public JPanel getPanelClock() {
 		return panelClock;
 	}
-	
+
 
 
 
