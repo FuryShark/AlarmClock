@@ -1,12 +1,12 @@
 package alarmClock;
 
-import java.time.LocalTime;
-
 public class Clock {
-	
-	 public static void main(String[] args) {
-	       	AlarmClock alarmClock = new AlarmClock();
-	        alarmClock.setVisible(true);
-	    }
+
+	public static void main(String[] args) {
+		Model model = new Model();
+		AlarmClock alarmClock = new AlarmClock(model);
+		alarmClock.setVisible(true);
+
+	}
 
 }
